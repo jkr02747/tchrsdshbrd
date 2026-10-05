@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header class="topbar">
+    <div>
+        <h1>Teacher Dashboard</h1>
+        <p id="currentDate"></p>
+    </div>
+
+    <button id="clearDataBtn" class="danger-btn">
+        Clear Data
+    </button>
+</header>
+
+<main class="container">
+
+    <section class="status-card">
+        <div>
+            <h2>Today's Status</h2>
+            <p id="statusText">Not updated</p>
+        </div>
+
+        <div class="status-buttons">
+            <button class="status-btn present" data-status="Present">Present</button>
+            <button class="status-btn absent" data-status="Absent">Absent</button>
+            <button class="status-btn leave" data-status="On Leave">On Leave</button>
+        </div>
+    </section>
+
+    <section class="dashboard-grid">
+
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <h2>Student Attendance</h2>
+                    <p>Track today's class attendance</p>
+                </div>
+                <span class="card-icon">👥</span>
+            </div>
+
+            <div class="attendance-summary">
+                <div>
+                    <strong id="presentCount">0</strong>
+                    <span>Present</span>
+                </div>
+                <div>
+                    <strong id="absentCount">0</strong>
+                    <span>Absent</span>
+                </div>
+                <div>
+                    <strong id="attendancePercentage">0%</strong>
+                    <span>Attendance</span>
+                </div>
+            </div>
+
+            <button class="primary-btn" onclick="openModal('attendanceModal')">
+                Update Attendance
+            </button>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <h2>Assignments to Grade</h2>
+                    <p>Pending student work</p>
+                </div>
+                <span class="card-icon">📝</span>
+            </div>
+
+            <div class="big-number" id="assignmentCount">0</div>
+
+            <button class="primary-btn" onclick="openModal('assignmentModal')">
+                Add Assignment
+            </button>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <h2>Today's Schedule</h2>
+                    <p>Your upcoming classes</p>
+                </div>
+                <span class="card-icon">📅</span>
+            </div>
+
+            <div id="scheduleList" class="schedule-list">
+                <p class="empty-message">No classes scheduled.</p>
+            </div>
+
+            <button class="primary-btn" onclick="openModal('scheduleModal')">
+                Add Class
+            </button>
+        </div>
+
+    </section>
+
+    <section class="section-card">
+        <div class="section-header">
+            <div>
+                <h2>Tests & Exams</h2>
+                <p>Upcoming assessments</p>
+            </div>
+
+            <button class="primary-btn" onclick="openModal('testModal')">
+                Add Test
+            </button>
+        </div>
+
+        <div id="testList" class="item-list">
+            <p class="empty-message">No upcoming tests or exams.</p>
+        </div>
+    </section>
+
+    <section class="section-card">
+        <div class="section-header">
+            <div>
+                <h2>Assignments</h2>
+                <p>Track submitted and graded work</p>
+            </div>
+        </div>
+
+        <div id="assignmentList" class="item-list">
+            <p class="empty-message">No assignments added.</p>
+        </div>
+    </section>
+
+    <section class="section-card">
+        <div class="section-header">
+            <div>
+                <h2>Class Progress</h2>
+                <p>Record your teaching progress</p>
+            </div>
+
+            <button class="primary-btn" onclick="openModal('progressModal')">
+                Add Progress
+            </button>
+        </div>
+
+        <div id="progressList" class="item-list">
+            <p class="empty-message">No class progress recorded.</p>
+        </div>
+    </section>
+
+</main>
+
+<div class="modal" id="attendanceModal">
+    <div class="modal-content">
+        <button class="close-btn" onclick="closeModal('attendanceModal')">×</button>
+
+        <h2>Update Student Attendance</h2>
+
+        <label>
+            Class
+            <input id="attendanceClass" type="text" placeholder="e.g. B.Tech CSE - 1A">
+        </label>
+
+        <label>
+            Total Students
+            <input id="totalStudents" type="number" min="0">
+        </label>
+
+        <label>
+            Present Students
+            <input id="studentsPresent" type="number" min="0">
+        </label>
+
+        <button class="primary-btn full-width" onclick="saveAttendance()">
+            Save Attendance
+        </button>
+    </div>
+</div>
+
+<div class="modal" id="assignmentModal">
+    <div class="modal-content">
+        <button class="close-btn" onclick="closeModal('assignmentModal')">×</button>
+
+        <h2>Add Assignment</h2>
+
+        <label>
+            Assignment
+            <input id="assignmentName" type="text" placeholder="e.g. JavaScript Arrays">
+        </label>
+
+        <label>
+            Class
+            <input id="assignmentClass" type="text" placeholder="e.g. CSE-1A">
+        </label>
+
+        <label>
+            Due Date
+            <input id="assignmentDueDate" type="date">
+        </label>
+
+        <label>
+            Status
+            <select id="assignmentStatus">
+                <option value="Pending">Pending</option>
+                <option value="Graded">Graded</option>
+            </select>
+        </label>
+
+        <button class="primary-btn full-width" onclick="saveAssignment()">
+            Save Assignment
+        </button>
+    </div>
+</div>
+
+<div class="modal" id="scheduleModal">
+    <div class="modal-content">
+        <button class="close-btn" onclick="closeModal('scheduleModal')">×</button>
+
+        <h2>Add Class</h2>
+
+        <label>
+            Subject
+            <input id="subject" type="text" placeholder="e.g. Data Structures">
+        </label>
+
+        <label>
+            Class
+            <input id="className" type="text" placeholder="e.g. CSE-2A">
+        </label>
+
+        <label>
+            Time
+            <input id="classTime" type="time">
+        </label>
+
+        <label>
+            Room
+            <input id="classRoom" type="text" placeholder="e.g. Room 204">
+        </label>
+
+        <button class="primary-btn full-width" onclick="saveSchedule()">
+            Save Class
+        </button>
+    </div>
+</div>
+
+<div class="modal" id="testModal">
+    <div class="modal-content">
+        <button class="close-btn" onclick="closeModal('testModal')">×</button>
+
+        <h2>Add Test / Exam</h2>
+
+        <label>
+            Test Name
+            <input id="testName" type="text" placeholder="e.g. Mid Term Exam">
+        </label>
+
+        <label>
+            Subject
+            <input id="testSubject" type="text" placeholder="e.g. Mathematics">
+        </label>
+
+        <label>
+            Date
+            <input id="testDate" type="date">
+        </label>
+
+        <label>
+            Type
+            <select id="testType">
+                <option value="Test">Test</option>
+                <option value="Exam">Exam</option>
+            </select>
+        </label>
+
+        <button class="primary-btn full-width" onclick="saveTest()">
+            Save Test
+        </button>
+    </div>
+</div>
+
+<div class="modal" id="progressModal">
+    <div class="modal-content">
+        <button class="close-btn" onclick="closeModal('progressModal')">×</button>
+
+        <h2>Class Progress</h2>
+
+        <label>
+            Subject
+            <input id="progressSubject" type="text" placeholder="e.g. DBMS">
+        </label>
+
+        <label>
+            Class
+            <input id="progressClass" type="text" placeholder="e.g. CSE-2A">
+        </label>
+
+        <label>
+            Topic Covered
+            <input id="progressTopic" type="text" placeholder="e.g. SQL Joins">
+        </label>
+
+        <label>
+            Progress
+            <select id="progressStatus">
+                <option value="Completed">Completed</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Pending">Pending</option>
+            </select>
+        </label>
+
+        <button class="primary-btn full-width" onclick="saveProgress()">
+            Save Progress
+        </button>
+    </div>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
